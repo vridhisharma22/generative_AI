@@ -1,0 +1,13 @@
+int addDigits(int num) {
+int a, n, sum = 0;
+while (num >= 10) {
+sum = 0;
+for (int i = 0; num != 0; i++) {
+n = num % 10;
+num = num / 10;
+sum = sum + n;
+}
+}
+num = sum;
+return num;
+}
