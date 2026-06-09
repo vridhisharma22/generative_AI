@@ -1,0 +1,13 @@
+int firstUniqChar(char* s) {
+int i, j;
+for (i = 0; s[i] != '\0'; i++) {
+for (j = 0; s[j] != '\0'; j++) {
+if (i != j && s[i] == s[j]) {
+break;
+}
+}
+if (s[j] == '\0') {
+return i;
+}
+}
+return 
