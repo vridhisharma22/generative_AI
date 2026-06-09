@@ -1,0 +1,17 @@
+bool isHappy(int n)
+{
+int t, d, sum;
+while (n != 1 && n != 4)
+{
+t = n;
+sum = 0;
+while (t != 0)
+{
+d = t % 10;
+sum = sum + pow(d, 2);
+t = t / 10;
+}
+n = sum;
+}
+return n == 1;
+}
