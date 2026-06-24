@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vridhi Sharma — AI Terminal Core</title>
+    <link rel="stylesheet" href="colours.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 1rem;
+            overflow-x: hidden;
+        }
+        .terminal-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: auto;
+            background: #050814;
+            border: 1px solid rgba(120, 212, 219, 0.2);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            height: 75vh; 
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+        }
+        .terminal-bar {
+            background: #0a0e1a;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(120, 212, 219, 0.1);
+        }
+        .t-dots { display: flex; gap: 8px; }
+        .t-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .t-dot.r { background: #ff5f56; }
+        .t-dot.y { background: #ffbd2e; }
+        .t-dot.g { background: #27c93f; }
+        
+        .chat-body {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: rgba(2, 4, 10, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .msg-row { display: flex; width: 100%; }
+        .msg-row.incoming { justify-content: flex-start; }
+        .msg-row.outgoing { justify-content: flex-end; }
+        
+        .bubble {
+            max-width: 80%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            line-height: 1.6;
+            word-wrap: break-word;
+            font-family: var(--body-font), sans-serif;
+        }
+        .incoming .bubble { background: #0a0e1a; color: #fff; border: 1px solid rgba(120, 212, 219, 0.15); }
+        .outgoing .bubble { background: var(--neon-cyan); color: #000; font-weight: 500; }
+        
+        .chips-bar { padding: 10px 20px; display: flex; gap: 10px; flex-wrap: wrap; background: rgba(5, 8, 20, 0.4); border-top: 1px solid rgba(120, 212, 219, 0.05); }
+        .chip-btn {
+            background: #0a0e1a; color: var(--neon-cyan); border: 1px solid rgba(120, 212, 219, 0.2);
+            border-radius: 20px; padding: 6px 14px; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+        }
+        .chip-btn:hover { border-color: var(--neon-cyan); background: rgba(120, 212, 219, 0.1); }
+        
+        .input-form { 
+            padding: 16px; 
+            background: #0a0e1a; 
+            display: flex; 
+            gap: 12px; 
+            border-top: 1px solid rgba(120, 212, 219, 0.2);
+            position: relative;
+            z-index: 999;
+        }
+        .chat-input {
+            flex: 1; 
+            background: #02040a; 
+            border: 1px solid rgba(120, 212, 219, 0.3);
+            border-radius: 8px; 
+            padding: 14px 18px; 
+            color: #fff; 
+            font-family: 'Share Tech Mono', monospace; 
+            font-size: 1rem; 
+            outline: none;
+        }
+        .chat-input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(120, 212, 219, 0.2); }
+        .send-btn {
+            background: var(--neon-cyan); color: #000; border: none; border-radius: 8px;
+            padding: 0 24px; font-family: var(--pixel), monospace; font-size: 0.65rem; cursor: pointer;
+        }
+        .send-btn:disabled { background: #3a4750; color: #7a8aaa; cursor: not-allowed; }
+
+        .typing-loader { display: flex; gap: 4px; padding: 4px 0; }
+        .typing-loader span { width: 6px; height: 6px; background-color: var(--neon-cyan); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .typing-loader span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-loader span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" style="width: 100%; max-width: 1000px; margin: 0 auto 1rem;">
+        <div class="nav-logo">VS AI</div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">AI TERMINAL</a></li>
+            <li><a href="portfolio.html" style="color: var(--neon-cyan); font-weight: bold; text-shadow: 0 0 10px var(--neon-cyan);">VIEW FULL PORTFOLIO →</a></li>
+        </ul>
+    </nav>
+
+    <div class="terminal-container">
+        <div class="terminal-bar">
+            <div class="t-dots">
+                <div class="t-dot r"></div>
+                <div class="t-dot y"></div>
+                <div class="t-dot g"></div>
+            </div>
+            <span style="font-family: var(--pixel), monospace; font-size: 0.6rem; color: var(--text-dim);">SYSTEM_BOOT_SUCCESS</span>
+            <div></div>
+        </div>
+
+        <div class="chat-body" id="chatWindow">
+            <div class="msg-row incoming">
+                <div class="bubble">System operational. I am Vridhi Sharma's AI agent. Ask me anything about her skills, academic tracking, or **any general knowledge question** in the world. I will answer in English. Type your text below:</div>
+            </div>
+        </div>
+
+        <div class="chips-bar">
+            <button class="chip-btn" onclick="triggerQuery('What are Vridhi\'s technical skills?')">⚙️ Technical Skills</button>
+            <button class="chip-btn" onclick="triggerQuery('Show me Vridhi\'s projects')">🚀 Project Showcase</button>
+            <button class="chip-btn" onclick="triggerQuery('Explain object oriented programming in simple terms')">💡 General AI Query</button>
+        </div>
+
+        <form class="input-form" id="chatForm">
+            <input type="text" class="chat-input" id="userInput" placeholder="Ask me absolutely anything in the world..." autocomplete="off" required>
+            <button type="submit" class="send-btn" id="sendBtn">SEND</button>
+        </form>
+    </div>
+
+    <script src="chat-logic.js"></script>
+</body>
